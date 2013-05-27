@@ -221,6 +221,8 @@ object Duration {
     final def toMinutes: Long = fail("toMinutes")
     final def toHours: Long   = fail("toHours")
     final def toDays: Long    = fail("toDays")
+	
+    final def toCoarsest: Duration = this
   }
 
   /**
@@ -520,6 +522,10 @@ sealed abstract class Duration extends Serializable with Ordered[Duration] {
    * $ovf
    */
   def plus(other: Duration)  = this + other
+  /**
+   * Return coarsest value or self, for example 60 seconds will be converted into 1 hour.
+   */  
+  def toCoarsest: Duration
 }
 
 object FiniteDuration {
@@ -690,6 +696,8 @@ final class FiniteDuration(val length: Long, val unit: TimeUnit) extends Duratio
   def unary_- = Duration(-length, unit)
 
   final def isFinite() = true
+  
+  final def toCoarsest: Duration = Duration.fromNanos(toNanos)
 
   override def equals(other: Any) = other match {
     case x: FiniteDuration => toNanos == x.toNanos
